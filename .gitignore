@@ -1,0 +1,5 @@
+vendor
+tmp
+config/private.toml
+data.db
+.vscode
