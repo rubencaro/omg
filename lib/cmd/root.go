@@ -29,7 +29,10 @@ var rootCmd = &cobra.Command{
  shapes and colors of helper scripts and tools I use with them.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		hlp.Spit(c.AllSettings())
+		customCmd := c.GetString("custom." + args[0])
+		if customCmd != "" {
+			hlp.Run(c.GetString("custom." + args[0]))
+		}
 	},
 }
 

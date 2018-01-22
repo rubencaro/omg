@@ -3,6 +3,7 @@
 package hlp
 
 import (
+	"bufio"
 	"fmt"
 	"os/exec"
 	"runtime"
@@ -15,8 +16,43 @@ func Spit(what interface{}) {
 }
 
 // Run gets a bash command string and runs it on a new bash instance.
-// Then returns whatever `exec.Run` returns.
+// It captures its output and prints it to stdout.
 //
-func Run(cmd string) error {
-	return exec.Command("bash", "-c", cmd).Run()
+func Run(cmdline string) error {
+	cmd := exec.Command("bash", "-c", cmdline)
+	outReader, err := cmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+
+	outScanner := bufio.NewScanner(outReader)
+	go func() {
+		for outScanner.Scan() {
+			fmt.Println(outScanner.Text())
+		}
+	}()
+
+	errReader, err := cmd.StderrPipe()
+	if err != nil {
+		return err
+	}
+
+	errScanner := bufio.NewScanner(errReader)
+	go func() {
+		for errScanner.Scan() {
+			fmt.Println(errScanner.Text())
+		}
+	}()
+
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+
+	err = cmd.Wait()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
