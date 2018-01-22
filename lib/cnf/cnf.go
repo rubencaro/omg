@@ -4,6 +4,9 @@ package cnf
 import (
 	"flag"
 	"fmt"
+	"io"
+	"os"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -15,29 +18,20 @@ type Cnf struct {
 
 // Read reads config for this application and returns it.
 //
-// First it will retrieve 'env' and 'config' flags. They will default to 'dev' and './config'.
-// Then it uses those path and environment to load files found there.
-// It supports anything Viper does (will get TOML, YAML, JSON...).
-// It first reads 'config' file, then it reads given 'env' file.
-// Then it tries to read a 'private' file.
-// Only 'config' file must exist. Others are optional.
+// First it will retrieve 'path' flag. It defaults to the current path.
+// Then it reads the mandatory '.omg.toml' file, and then it tries to read
+// an optional '.omg_private.toml' file.
 //
-// A typical config files layout is similar to Elixir's:
-//     config/config.toml
-//           /prod.toml
-//           /dev.toml
-//           /test.toml
-//           /private.toml  <-- typically on gitignore
-//
+// You should keep '.omg_private.toml' outside your version control.
 //
 // A typical use case:
-//		var cnf, err = cnf.Read()
+//		var c, err = cnf.Read()
 //		if err != nil {
 //			fmt.Println("We need configuration!", err)
 // 			return
 //		}
 //
-func Read() (Cnf, error) {
+func Read() (*Cnf, error) {
 	return ReadAndValidate([]string{}, make(map[string]interface{}))
 }
 
@@ -48,7 +42,7 @@ func Read() (Cnf, error) {
 // It also accepts a 'defaults' map, which should contain default values for optional keys.
 //
 // A typical use case:
-// 		var cnf, err = cnf.ReadAndValidate(
+// 		var c, err = cnf.ReadAndValidate(
 // 			[]string{
 // 				"mandatorykey1",
 // 				"mandatorykey2",
@@ -61,20 +55,24 @@ func Read() (Cnf, error) {
 // 			return
 // 		}
 //
-func ReadAndValidate(mandatory []string, defaults map[string]interface{}) (Cnf, error) {
+func ReadAndValidate(mandatory []string, defaults map[string]interface{}) (*Cnf, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
 	// Get minimum config from flags
-	var env = flag.String("env", "dev", "Environment. Should be something like 'dev', 'prod' or 'test'.")
-	var path = flag.String("config", "./config", "Folder with configuration files.")
+	var path = flag.String("path", cwd, "Folder with configuration files.")
 	flag.Parse()
 
-	return doReadAndValidate(*path, *env, mandatory, defaults)
+	return doReadAndValidate(*path, mandatory, defaults)
 }
 
-func doReadAndValidate(path string, env string, mandatory []string, defaults map[string]interface{}) (Cnf, error) {
+func doReadAndValidate(path string, mandatory []string, defaults map[string]interface{}) (*Cnf, error) {
 	// actual read & merge of config values
-	cnf, err := doRead(path, env)
+	cnf, err := doRead(path)
 	if err != nil {
-		return Cnf{cnf}, err
+		return &Cnf{cnf}, err
 	}
 
 	// apply defaults
@@ -85,14 +83,14 @@ func doReadAndValidate(path string, env string, mandatory []string, defaults map
 	// check mandatory values are set
 	for i := 0; i < len(mandatory); i++ {
 		if !cnf.IsSet(mandatory[i]) {
-			return Cnf{cnf}, fmt.Errorf("mandatory key '%s' not found in config", mandatory[i])
+			return &Cnf{cnf}, fmt.Errorf("mandatory key '%s' not found in config", mandatory[i])
 		}
 	}
 
-	return Cnf{cnf}, nil
+	return &Cnf{cnf}, nil
 }
 
-func doRead(path string, env string) (*viper.Viper, error) {
+func doRead(path string) (*viper.Viper, error) {
 	var err error
 	var notFound bool
 
@@ -108,27 +106,21 @@ func doRead(path string, env string) (*viper.Viper, error) {
 	}
 	v.AddConfigPath(path)
 
-	// read values in 'config'
-	v.SetConfigName("config")
+	// create '.omg.toml' if it does not exist
+	err = ensureItExists(path)
+	if err != nil {
+		return v, err
+	}
+
+	// read values in '.omg'
+	v.SetConfigName(".omg")
 	err = v.ReadInConfig()
 	if err != nil {
 		return v, err
 	}
 
-	// force env if given via OMG_ENV
-	if v.IsSet("env") {
-		env = v.GetString("env")
-	}
-	// merge values in 'env' if exists
-	v.SetConfigName(env)
-	err = v.MergeInConfig()
-	_, notFound = err.(viper.ConfigFileNotFoundError)
-	if err != nil && !notFound {
-		return v, err
-	}
-
-	// merge values in 'private' if exists
-	v.SetConfigName("private")
+	// merge values in '.omg_private' if exists
+	v.SetConfigName(".omg_private")
 	err = v.MergeInConfig()
 	_, notFound = err.(viper.ConfigFileNotFoundError)
 	if err != nil && !notFound {
@@ -136,4 +128,24 @@ func doRead(path string, env string) (*viper.Viper, error) {
 	}
 
 	return v, nil
+}
+
+func ensureItExists(path string) error {
+	file := path + "/.omg.toml"
+	_, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return createSample(file)
+	}
+	return nil
+}
+
+func createSample(dst string) error {
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, strings.NewReader(sample))
+	return err
 }
