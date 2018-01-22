@@ -26,7 +26,7 @@ All documentation should be accessible from the `omg help` command and comments 
 
 It can run arbitrary scripts on your machine, just like `npm run <thing>` does.
 
-It can perform all things [bottler](https://github.com/rubencaro/bottler) can. Except for the _release_ part, which needs an inside man on the Erlang VM. That will is sorted out supporting _distillery_.
+It can perform all things [bottler](https://github.com/rubencaro/bottler) can. Except for the _release_ part, which needs an inside man on the Erlang VM. That will be sorted out supporting _distillery_.
 
 It can do some of the things [goreleaser](https://goreleaser.com/) does. Like _builds_ for several platforms and _releasing_ to github.
 
