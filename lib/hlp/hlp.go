@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
 // Spit prints anything given to stdout
@@ -18,13 +19,14 @@ func Spit(what interface{}) {
 // Run gets a bash command string and runs it on a new bash instance.
 // It captures its output and prints it to stdout.
 //
-func Run(cmdline string) error {
-	cmd := exec.Command("bash", "-c", cmdline)
+func Run(cmdline string, args ...string) error {
+	args = append([]string{cmdline}, args...)
+	cmd := exec.Command("bash", "-c", strings.Join(args, " "))
+
 	outReader, err := cmd.StdoutPipe()
 	if err != nil {
 		return err
 	}
-
 	outScanner := bufio.NewScanner(outReader)
 	go func() {
 		for outScanner.Scan() {
@@ -36,7 +38,6 @@ func Run(cmdline string) error {
 	if err != nil {
 		return err
 	}
-
 	errScanner := bufio.NewScanner(errReader)
 	go func() {
 		for errScanner.Scan() {

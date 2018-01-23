@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/rubencaro/omg/lib/cnf"
 	"github.com/rubencaro/omg/lib/hlp"
 	"github.com/spf13/cobra"
@@ -16,6 +18,12 @@ var version string // to be set from build script
 var rootCmd = &cobra.Command{
 	Use:   "omg",
 	Short: "OMG is a tool to manage all those little scripts around code",
+	Long: `OMG is a tool to efficiently manage all those little things/scripts/files
+around my code that make up for different stages of development.
+Such as compiling, releasing, deploying, packaging or publishing,
+but also linting, formatting, testing, benchmarking, etc.
+
+See the generated '.omg.toml' file for configuration options.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -43,10 +51,12 @@ func addDyamicCommands(c *cnf.Cnf, root *cobra.Command) error {
 
 func addCommand(name, cmdline string, root *cobra.Command) {
 	cmd := &cobra.Command{
-		Use: name,
+		Use:   name,
+		Short: fmt.Sprintf("Just run '%s'", cmdline),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return hlp.Run(cmdline)
+			return hlp.Run(cmdline, args...)
 		},
+		DisableFlagParsing: true,
 	}
 	root.AddCommand(cmd)
 }
