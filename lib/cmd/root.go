@@ -14,20 +14,8 @@ var version string // to be set from build script
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use: "omg",
-	// Short: "OMG is a tool to manage all those little scripts around code",
-	// Long: `
-	// A tool to efficiently manage all those little things/scripts/files
-	// around my code that make up for different stages of development.
-	// Such as compiling, releasing, deploying, packaging or publishing,
-	// but also linting, formatting, testing, benchmarking, etc.
-
-	// Because all those helper scripts around your code should be amazing too.
-
-	// It is stack independent, so I can use it with all my
-	// Javascript/Elixir/Go/Whatever projects. Also compatible with all the
-	// shapes and colors of helper scripts and tools I use with them.
-	// `,
+	Use:   "omg",
+	Short: "OMG is a tool to manage all those little scripts around code",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
