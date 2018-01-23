@@ -13,8 +13,11 @@ func init() {
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of OMG",
-	Long:  `All software has versions. This is OMG's`,
+	Long: `It's composed of a numerical part X.Y.Z (Major.Minor.Patch)
+followed by a pre-release version.
+
+Just take a look at https://semver.org/.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("OMG v0.1-", version)
+		fmt.Printf("0.1.0-%s\n", version)
 	},
 }

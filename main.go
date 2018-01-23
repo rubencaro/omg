@@ -7,6 +7,8 @@ import (
 	"github.com/rubencaro/omg/lib/cnf"
 )
 
+var version string // to be set from build script
+
 func main() {
 	// Read config
 	conf, err := cnf.Read()
@@ -16,7 +18,7 @@ func main() {
 	}
 
 	// Start Cobra CLI
-	err = cmd.Execute(conf)
+	err = cmd.Execute(conf, version)
 	if err != nil {
 		fmt.Println("OMG it failed! \n", err)
 	}

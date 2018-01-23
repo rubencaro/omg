@@ -1,2 +1,2 @@
 #!/bin/bash
-go test -v -ldflags "-X main.version=$(git rev-list -1 HEAD)" ./test/... "$@"
+go test -v -ldflags "-X main.version=$(git rev-parse --short HEAD)" ./test/... "$@"
