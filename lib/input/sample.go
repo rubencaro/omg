@@ -1,4 +1,4 @@
-package cnf
+package input
 
 // These are the contents to be written into the default config file
 // when it does not exist.

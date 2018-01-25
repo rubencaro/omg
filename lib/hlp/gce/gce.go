@@ -3,13 +3,13 @@
 package gcloud
 
 import (
-	"github.com/rubencaro/omg/lib/cnf"
 	"github.com/rubencaro/omg/lib/hlp"
+	"github.com/rubencaro/omg/lib/input"
 )
 
 // Instances invokes 'gcloud compute instances list --format=json'
 // to get the list of instances for the given parameters
-func Instances(c *cnf.Cnf) (string, error) {
+func Instances(d *input.Data) (string, error) {
 	// TODO https://github.com/rubencaro/bottler/blob/master/lib/bottler/helpers/gce.ex
 	return hlp.Run("")
 }
