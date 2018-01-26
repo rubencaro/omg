@@ -1,20 +1,21 @@
-package cmd
+package cli
 
 import (
 	"github.com/rubencaro/omg/lib/hlp"
-	"github.com/spf13/cobra"
+	"github.com/rubencaro/omg/lib/input"
 )
 
 func init() {
-	rootCmd.AddCommand(gotoCmd)
+	addCommand(gotoCmd)
 }
 
-var gotoCmd = &cobra.Command{
-	Use:   "goto [server]",
+var gotoCmd = &Command{
+	Name:  "goto",
 	Short: "Open an SSH session with given server",
 	Long: `It opens an SSH session on a new terminal window on the server with given name.
 	The actual "terminal" command can be configured as a template.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *Command, data *input.Data) error {
 		hlp.Spit("hey")
+		return nil
 	},
 }

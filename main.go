@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/rubencaro/omg/lib/cmd"
+	"github.com/rubencaro/omg/lib/cli"
 	"github.com/rubencaro/omg/lib/input"
 )
 
@@ -17,8 +17,10 @@ func main() {
 		return
 	}
 
-	// Start Cobra CLI
-	err = cmd.Execute(data, version)
+	data.Version = version
+
+	// Start CLI
+	err = cli.Execute(data)
 	if err != nil {
 		fmt.Println("OMG it failed! \n", err)
 	}
