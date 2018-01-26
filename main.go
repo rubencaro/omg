@@ -22,6 +22,6 @@ func main() {
 	// Start CLI
 	err = cli.Execute(data)
 	if err != nil {
-		fmt.Println("OMG it failed! \n", err)
+		fmt.Println("OMG", err)
 	}
 }

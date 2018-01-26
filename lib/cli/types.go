@@ -13,5 +13,5 @@ type Command struct {
 	Long string
 
 	// The actual running function
-	Run func(cmd *Command, data *input.Data) error
+	Run func(data *input.Data) error
 }

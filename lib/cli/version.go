@@ -12,12 +12,16 @@ func init() {
 
 var versionCmd = &Command{
 	Name:  "version",
-	Short: "Print the version number of OMG",
-	Long: `It's composed of a numerical part X.Y.Z (Major.Minor.Patch)
-followed by a pre-release version.
+	Short: "Print the OMG version number",
+	Long: `
+omg version
 
-Just take a look at https://semver.org/.`,
-	Run: func(cmd *Command, data *input.Data) error {
+It's composed of a numerical part X.Y.Z (Major.Minor.Patch)
+followed by a pre-release version label.
+
+Just take a look at https://semver.org/.
+`,
+	Run: func(data *input.Data) error {
 		fmt.Printf("0.1.0-%s\n", data.Version)
 		return nil
 	},
