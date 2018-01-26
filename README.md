@@ -12,7 +12,7 @@ I mean it to be stack independent, so I can use it with all my Javascript/Elixir
 
 You just download the compiled binary of the last release for your platform into the root of your project, and then `omg`. That should show you some guidance and create a documented `.omg.toml` file. You fill it in and you are good to go on asking `omg` to do things. `omg help` should help. Things like `omg deploy` or `omg release` or `omg publish` should start to work as you define them.
 
-Both the `omg` binary and the `.omg.toml` file are meant to be included on version control. Both are locked to your code. That's a big fat feature. You may choose to have a global `omg` binary and keep only `.omg.toml` included into VCS though. It's up to you.
+Both the `omg` binary and the `.omg.toml` file are meant to be included on version control. Both are locked to your code. That's a big fat feature. You may choose to have a global `omg` binary and keep only `.omg.toml` included into VCS though. It's up to you. It that case you just need to put the binary on your system `PATH` (ex. `~/.local/bin`) and you're done. When updating `omg`, or when working from different machines, you may take a look at the version numbers and the [Changelog](#changelog) to ensure everything in your `.omg.toml` will work as expected.
 
 All documentation should be accessible from the `omg help` command and comments on `.omg.toml` itself. You shouldn't need to come back here to look for usage instructions for your particular copy of `omg`. That's another big fat feature.
 
@@ -26,9 +26,8 @@ It will be able to perform all things [bottler](https://github.com/rubencaro/bot
 
 It will be able to do some of the things [goreleaser](https://goreleaser.com/) does. Like _builds_ for several platforms and _releasing_ to github.
 
-## TODOS
+## TODOs
 
-* Release 0.1
 * `goto` command
 * support GCE to get machine names for `goto`
 * ...
@@ -36,6 +35,8 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 ## Changelog
 
 ### master
+
+### 0.1
 
 * Run `custom` scripts
 * `help` command
