@@ -13,5 +13,11 @@ type Command struct {
 	Long string
 
 	// The actual running function
-	Run func(data *input.Data) error
+	Run func(cmd *Command, data *input.Data) error
+}
+
+// Server is the data for a remote server
+type Server struct {
+	Name string
+	IP   string
 }

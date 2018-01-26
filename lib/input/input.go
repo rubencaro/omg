@@ -15,7 +15,10 @@ type Data struct {
 func Read() (*Data, error) {
 	d := &Data{Viper: viper.New()}
 
-	// get cmdline data before anything else
+	// setDefaults before anything else
+	setDefaults(d)
+
+	// then get cmdline data
 	parseCmdline(d)
 
 	// add ENV support for any OMG_* variable

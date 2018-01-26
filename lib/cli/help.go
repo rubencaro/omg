@@ -14,7 +14,7 @@ var helpCmd = &Command{
 	Name:  "help",
 	Short: "Show help about other commands",
 	Long:  helpLongText,
-	Run: func(data *input.Data) error {
+	Run: func(cmd *Command, data *input.Data) error {
 		if len(data.Args) < 2 { // 'help' itself, or no command, given
 			printHelpIndex()
 		} else {

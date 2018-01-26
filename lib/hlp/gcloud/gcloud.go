@@ -11,5 +11,5 @@ import (
 // to get the list of instances for the given parameters
 func Instances(d *input.Data) (string, error) {
 	// TODO https://github.com/rubencaro/bottler/blob/master/lib/bottler/helpers/gce.ex
-	return hlp.Run("")
+	return hlp.Run("echo hey")
 }

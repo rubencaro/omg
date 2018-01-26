@@ -29,7 +29,7 @@ func Execute(data *input.Data) error {
 		return fmt.Errorf("Unknown command '%s'", data.Args[0])
 	}
 
-	return cmd.Run(data)
+	return cmd.Run(cmd, data)
 }
 
 func addDynamicCommands(d *input.Data) error {
@@ -40,7 +40,7 @@ func addDynamicCommands(d *input.Data) error {
 }
 
 func addDynamicCommand(name, cmdline string) {
-	cmd := &Command{
+	c := &Command{
 		Name:  name,
 		Short: fmt.Sprintf("Just run '%s'", cmdline),
 		Long: fmt.Sprintf(`
@@ -51,10 +51,10 @@ It will run '%s [...]'.
 Just as configured in the 'custom' section of the '.omg.toml' file.
 Following arguments and flags will be passed along as given.
 		`, name, cmdline),
-		Run: func(data *input.Data) error {
+		Run: func(cmd *Command, data *input.Data) error {
 			_, err := hlp.Run(cmdline, data.Args[1:]...)
 			return err
 		},
 	}
-	addCommand(cmd)
+	addCommand(c)
 }

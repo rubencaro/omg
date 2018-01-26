@@ -21,7 +21,7 @@ followed by a pre-release version label.
 
 Just take a look at https://semver.org/.
 `,
-	Run: func(data *input.Data) error {
+	Run: func(cmd *Command, data *input.Data) error {
 		fmt.Printf("%s\n", data.Version)
 		return nil
 	},
