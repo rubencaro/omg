@@ -7,7 +7,8 @@ import (
 	"github.com/rubencaro/omg/lib/input"
 )
 
-var version string // to be set from build script
+var release = "0.0.1"
+var commit string // to be set from build script
 
 func main() {
 	// Read data
@@ -17,7 +18,7 @@ func main() {
 		return
 	}
 
-	data.Version = version
+	data.Version = release + "-" + commit
 
 	// Start CLI
 	err = cli.Execute(data)

@@ -22,7 +22,7 @@ followed by a pre-release version label.
 Just take a look at https://semver.org/.
 `,
 	Run: func(data *input.Data) error {
-		fmt.Printf("0.1.0-%s\n", data.Version)
+		fmt.Printf("%s\n", data.Version)
 		return nil
 	},
 }
