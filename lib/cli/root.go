@@ -19,14 +19,14 @@ func Execute(data *input.Data) error {
 	addDynamicCommands(data)
 
 	var cmd *Command
-	if len(data.Args) == 0 { // no command given
+	if len(data.Args) == 1 { // no command given
 		cmd = helpCmd
 	} else {
-		cmd = commands[data.Args[0]]
+		cmd = commands[data.Args[1]]
 	}
 
 	if cmd == nil {
-		return fmt.Errorf("Unknown command '%s'", data.Args[0])
+		return fmt.Errorf("Unknown command '%s'", data.Args[1])
 	}
 
 	return cmd.Run(cmd, data)

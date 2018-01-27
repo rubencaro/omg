@@ -12,12 +12,7 @@ func doRead(d *Data) (*Data, error) {
 	var err error
 	var notFound bool
 
-	var path = d.GetString("path")
-
-	// force config path if given via OMG_PATH
-	if d.IsSet("path") {
-		path = d.GetString("path")
-	}
+	path := Get(d, "path") // set via flag or env
 	d.AddConfigPath(path)
 
 	// create '.omg.toml' if it does not exist

@@ -1,35 +1,33 @@
 package input
 
 import (
+	"flag"
 	"os"
-
-	"github.com/spf13/pflag"
 )
 
 func parseCmdline(d *Data) error {
 	// first parse and bind flags
-	err := parseFlags()
+	fset, err := parseFlags()
 	if err != nil {
 		return err
 	}
-	d.BindPFlags(pflag.CommandLine)
+	d.FlagSet = fset
 
 	// then get args after flags
-	d.Args = pflag.Args()
+	d.Args = fset.Args()
 
 	return nil
 }
 
-func parseFlags() error {
-	cwd, err := os.Getwd()
+func parseFlags() (*flag.FlagSet, error) {
+	fset := flag.NewFlagSet("main", flag.ContinueOnError)
+
+	err := defineFlags(fset)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// define any flag supported by any command
-	pflag.String("path", cwd, "Folder with configuration files.")
+	fset.Parse(os.Args)
 
-	pflag.Parse()
-
-	return nil
+	return fset, nil
 }

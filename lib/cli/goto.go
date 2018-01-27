@@ -31,8 +31,8 @@ func gotoFunc(cmd *Command, data *input.Data) error {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
 
-	raw := data.GetStringMap("servers." + data.Args[1])
-	var target = &Server{Name: data.Args[1], IP: raw["ip"].(string)}
+	raw := data.GetStringMap("servers." + data.Args[2])
+	var target = &Server{Name: data.Args[2], IP: raw["ip"].(string)}
 	return openTerminal(target, data)
 }
 
