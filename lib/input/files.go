@@ -7,12 +7,13 @@ import (
 	"strings"
 
 	"github.com/pelletier/go-toml"
+	"github.com/rubencaro/omg/lib/data"
 )
 
-func readFiles(d *Data) (*ConfigData, *ConfigData, error) {
+func readFiles(d *data.D) (*data.Config, *data.Config, error) {
 	var err error
 
-	path := GetFlagOrEnv(d, "path")
+	path := getFlagOrEnv(d, "path")
 	configFile := path + "/.omg.toml"
 	privateFile := path + "/.omg_private.toml"
 
@@ -30,7 +31,7 @@ func readFiles(d *Data) (*ConfigData, *ConfigData, error) {
 
 	// merge values in '.omg_private' if it exists
 	_, err = os.Stat(privateFile)
-	priv := &ConfigData{}
+	priv := &data.Config{}
 	if err == nil {
 		priv, err = readTOML(privateFile)
 		if err != nil {
@@ -60,7 +61,7 @@ func createSample(dst string) error {
 	return err
 }
 
-func readTOML(path string) (*ConfigData, error) {
+func readTOML(path string) (*data.Config, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -72,7 +73,7 @@ func readTOML(path string) (*ConfigData, error) {
 		return nil, err
 	}
 
-	config := &ConfigData{}
+	config := &data.Config{}
 	err = toml.Unmarshal(inputBytes, config)
 	if err != nil {
 		return nil, err

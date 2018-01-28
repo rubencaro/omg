@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/rubencaro/omg/lib/input"
+	"github.com/rubencaro/omg/lib/data"
 )
 
 func init() {
@@ -21,7 +21,7 @@ followed by a pre-release version label.
 
 Just take a look at https://semver.org/.
 `,
-	Run: func(cmd *Command, data *input.Data) error {
+	Run: func(cmd *Command, data *data.D) error {
 		fmt.Printf("%s\n", data.Version)
 		return nil
 	},

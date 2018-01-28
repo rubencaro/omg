@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/rubencaro/omg/lib/input"
+	"github.com/rubencaro/omg/lib/data"
 )
 
 func init() {
@@ -14,7 +14,7 @@ var helpCmd = &Command{
 	Name:  "help",
 	Short: "Show help about other commands",
 	Long:  helpLongText,
-	Run: func(cmd *Command, data *input.Data) error {
+	Run: func(cmd *Command, data *data.D) error {
 		if len(data.Args) < 2 { // 'help' itself, or no command, given
 			printHelpIndex()
 		} else {

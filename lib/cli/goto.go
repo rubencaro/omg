@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
-	"github.com/rubencaro/omg/lib/hlp/gcloud"
 	"github.com/rubencaro/omg/lib/input"
 )
 
@@ -27,13 +27,13 @@ See the '.omg.toml' file for more detail.
 	Run: gotoFunc,
 }
 
-func gotoFunc(cmd *Command, data *input.Data) error {
+func gotoFunc(cmd *Command, data *data.D) error {
 	if len(data.Args) < 2 {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
 	name := data.Args[1]
 
-	servers, err := gcloud.GetInstances(data)
+	servers, err := input.ResolveServers(data)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func gotoFunc(cmd *Command, data *input.Data) error {
 	return openTerminal(target, data)
 }
 
-func openTerminal(target *input.Server, data *input.Data) error {
+func openTerminal(target *data.Server, data *data.D) error {
 	cmdline, err := renderTerminalTemplate(target, data)
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func openTerminal(target *input.Server, data *input.Data) error {
 	return err
 }
 
-func renderTerminalTemplate(target *input.Server, data *input.Data) (string, error) {
+func renderTerminalTemplate(target *data.Server, data *data.D) (string, error) {
 	strTpl := data.Config.Terminal
 	tpl, err := template.New("term").Parse(strTpl)
 	if err != nil {
@@ -78,7 +78,7 @@ func renderTerminalTemplate(target *input.Server, data *input.Data) (string, err
 	return res.String(), nil
 }
 
-func getRemoteUser(target *input.Server, data *input.Data) string {
+func getRemoteUser(target *data.Server, data *data.D) string {
 	if target.RemoteUser != "" {
 		return target.RemoteUser
 	}

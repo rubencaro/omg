@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
-	"github.com/rubencaro/omg/lib/input"
 )
 
 // GetInstances invokes 'gcloud compute instances list --format=json'
 // to get the list of instances for the given parameters
-func GetInstances(data *input.Data) (map[string]*input.Server, error) {
+func GetInstances(data *data.D) (map[string]*data.Server, error) {
 	cmd := getInstancesCmd(data)
 	res, err := hlp.Run(hlp.Silent, cmd)
 	if err != nil {
@@ -28,18 +28,18 @@ func GetInstances(data *input.Data) (map[string]*input.Server, error) {
 	return servers, nil
 }
 
-func getInstancesCmd(data *input.Data) string {
+func getInstancesCmd(data *data.D) string {
 	return fmt.Sprintf(
 		"gcloud compute instances list --format=json --project=%s",
-		data.Config.Gce["project"],
+		data.Config.Gce.Project,
 	)
 }
 
-func parseInstances(f []*gceServer) map[string]*input.Server {
-	servers := map[string]*input.Server{}
+func parseInstances(f []*gceServer) map[string]*data.Server {
+	servers := map[string]*data.Server{}
 	for _, s := range f {
 		var ip = s.NetworkInterfaces[0].AccessConfigs[0].NatIP
-		servers[s.Name] = &input.Server{Name: s.Name, IP: ip}
+		servers[s.Name] = &data.Server{Name: s.Name, IP: ip}
 	}
 	return servers
 }

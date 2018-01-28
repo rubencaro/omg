@@ -3,11 +3,13 @@ package input
 import (
 	"flag"
 	"os"
+
+	"github.com/rubencaro/omg/lib/data"
 )
 
 // getDefaults is where you should code default values for non-flag options
-func getDefaults() *ConfigData {
-	return &ConfigData{
+func getDefaults() *data.Config {
+	return &data.Config{
 		Terminal:   "konsole -e '{{.Command}}' &",
 		RemoteUser: "$USER",
 	}

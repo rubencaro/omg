@@ -1,30 +1,16 @@
 package input
 
 import (
-	"flag"
 	"os"
+
+	"github.com/rubencaro/omg/lib/data"
+	"github.com/rubencaro/omg/lib/input/gcloud"
 )
 
-// Data is the main input data struct
-type Data struct {
-	// Version is to be set from build script, saved here to be used around
-	Version string
-	// Args is the list of non-flag Args
-	Args []string
-	// FlagSet is the struct for the parsed flags
-	FlagSet *flag.FlagSet
-	// Config is the struct for the data from .omg.toml
-	Config *ConfigData
-	// Private is the struct for the data from .omg_private.toml
-	Private *ConfigData
-	// Defaults are coded defaul values
-	Defaults *ConfigData
-}
-
-// GetFlagOrEnv looks for given key on flags, and if it doesn't find a value,
+// getFlagOrEnv looks for given key on flags, and if it doesn't find a value,
 // then it looks for a 'OMG_<key>' environment variable.
 // Returns empty string if not found.
-func GetFlagOrEnv(d *Data, key string) string {
+func getFlagOrEnv(d *data.D, key string) string {
 	v, ok := getFlag(d, key)
 	if ok {
 		return v
@@ -32,7 +18,7 @@ func GetFlagOrEnv(d *Data, key string) string {
 	return os.Getenv("OMG_" + key)
 }
 
-func getFlag(d *Data, key string) (string, bool) {
+func getFlag(d *data.D, key string) (string, bool) {
 	f := d.FlagSet.Lookup(key)
 	if f == nil {
 		return "", false
@@ -40,9 +26,9 @@ func getFlag(d *Data, key string) (string, bool) {
 	return f.Value.String(), true
 }
 
-// Read parses all input from the outside world into a Data struct
-func Read() (*Data, error) {
-	d := &Data{}
+// Read parses all input from the outside world into a data.D struct
+func Read() (*data.D, error) {
+	d := &data.D{}
 	d.Defaults = getDefaults()
 
 	// get cmdline data
@@ -65,4 +51,13 @@ func Read() (*Data, error) {
 	d.Config = consolidateData(d)
 
 	return d, nil
+}
+
+// ResolveServers tries to get the server list from any source available.
+// If no automatic source is configured, then it returns specified fixed list.
+func ResolveServers(data *data.D) (map[string]*data.Server, error) {
+	if data.Config.Gce.Project != "" {
+		return gcloud.GetInstances(data)
+	}
+	return data.Config.Servers, nil
 }

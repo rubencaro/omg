@@ -28,13 +28,13 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ## TODOs
 
-* support GCE to get machine names for `goto`
 * ...
 
 ## Changelog
 
 ### master
 
+* support GCE to get machine names for `goto`
 * `goto` command
 * Get rid of Viper
   * Parse TOML using [go-toml](https://github.com/pelletier/go-toml) directly.

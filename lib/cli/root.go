@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
+	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
-	"github.com/rubencaro/omg/lib/input"
 )
 
 // Command is the struct for a CLI command
@@ -18,7 +18,7 @@ type Command struct {
 	Long string
 
 	// The actual running function
-	Run func(cmd *Command, data *input.Data) error
+	Run func(cmd *Command, data *data.D) error
 }
 
 // holder for init-time definition of commands
@@ -29,7 +29,7 @@ func addCommand(cmd *Command) {
 }
 
 // Execute finds out which Command to run, and then runs it
-func Execute(data *input.Data) error {
+func Execute(data *data.D) error {
 	addDynamicCommands(data)
 
 	var cmd *Command
@@ -46,7 +46,7 @@ func Execute(data *input.Data) error {
 	return cmd.Run(cmd, data)
 }
 
-func addDynamicCommands(d *input.Data) error {
+func addDynamicCommands(d *data.D) error {
 	for k, v := range d.Config.Custom {
 		addDynamicCommand(k, v)
 	}
@@ -65,7 +65,7 @@ It will run '%s [...]'.
 Just as configured in the 'custom' section of the '.omg.toml' file.
 Following arguments and flags will be passed along as given.
 		`, name, cmdline),
-		Run: func(cmd *Command, data *input.Data) error {
+		Run: func(cmd *Command, data *data.D) error {
 			_, err := hlp.Run(hlp.PrintToStdout, cmdline, data.Args[1:]...)
 			return err
 		},
