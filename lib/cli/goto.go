@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"github.com/rubencaro/omg/lib/hlp"
+	"github.com/rubencaro/omg/lib/hlp/gcloud"
 	"github.com/rubencaro/omg/lib/input"
 )
 
@@ -31,6 +32,13 @@ func gotoFunc(cmd *Command, data *input.Data) error {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
 	name := data.Args[1]
+
+	servers, err := gcloud.GetInstances(data)
+	if err != nil {
+		return err
+	}
+	data.Config.Servers = servers
+
 	target := data.Config.Servers[name]
 	if target == nil {
 		return fmt.Errorf("Unrecognised server name: '%s'", name)
@@ -43,7 +51,7 @@ func openTerminal(target *input.Server, data *input.Data) error {
 	if err != nil {
 		return err
 	}
-	_, err = hlp.Run(cmdline)
+	_, err = hlp.Run(hlp.PrintToStdout, cmdline)
 	return err
 }
 

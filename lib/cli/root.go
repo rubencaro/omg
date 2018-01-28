@@ -66,7 +66,7 @@ Just as configured in the 'custom' section of the '.omg.toml' file.
 Following arguments and flags will be passed along as given.
 		`, name, cmdline),
 		Run: func(cmd *Command, data *input.Data) error {
-			_, err := hlp.Run(cmdline, data.Args[1:]...)
+			_, err := hlp.Run(hlp.PrintToStdout, cmdline, data.Args[1:]...)
 			return err
 		},
 	}

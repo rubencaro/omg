@@ -8,10 +8,16 @@ import (
 	"strings"
 )
 
+// Silent would make Run produce no output on stdout
+const Silent = 0
+
+// PrintToStdout will make Run print to stdout all output on realtime
+const PrintToStdout = 1
+
 // Run gets a bash command string and runs it on a new bash instance.
-// It captures its output and prints it to stdout.
-//
-func Run(cmdline string, args ...string) (string, error) {
+// It captures its output. If 'print' is 'PrintToStdout' it will also print
+// any output to stdout on realtime.
+func Run(print int, cmdline string, args ...string) (string, error) {
 	var outBuf, errBuf bytes.Buffer
 
 	args = append([]string{cmdline}, args...)
@@ -27,10 +33,10 @@ func Run(cmdline string, args ...string) (string, error) {
 	}
 
 	outScanner := bufio.NewScanner(outReader)
-	go capture(outScanner, &outBuf)
+	go capture(outScanner, &outBuf, print)
 
 	errScanner := bufio.NewScanner(errReader)
-	go capture(errScanner, &errBuf)
+	go capture(errScanner, &errBuf, print)
 
 	err = cmd.Start()
 	if err != nil {
@@ -45,14 +51,16 @@ func Run(cmdline string, args ...string) (string, error) {
 	return outBuf.String() + errBuf.String(), nil
 }
 
-func capture(scanner *bufio.Scanner, buf *bytes.Buffer) {
+func capture(scanner *bufio.Scanner, buf *bytes.Buffer, print int) {
 	var txt string
 	var err error
 	for scanner.Scan() {
 		txt = scanner.Text()
-		_, err = fmt.Println(txt)
-		if err != nil {
-			panic(err.Error()) // we cannot go to stdout!
+		if print == PrintToStdout {
+			_, err = fmt.Println(txt)
+			if err != nil {
+				panic(err.Error()) // we cannot go to stdout!
+			}
 		}
 		_, err = buf.WriteString(txt)
 		if err != nil {
