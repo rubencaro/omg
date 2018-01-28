@@ -28,10 +28,18 @@ func getCustom(d *Data) map[string]string {
 }
 
 func getServers(d *Data) map[string]*Server {
+	s := d.Config.Servers
 	if len(d.Private.Servers) > 0 {
-		return d.Private.Servers
+		s = d.Private.Servers
 	}
-	return d.Config.Servers
+	formatFixedServers(s)
+	return s
+}
+
+func formatFixedServers(servers map[string]*Server) {
+	for k, v := range servers {
+		v.Name = k
+	}
 }
 
 func getGce(d *Data) map[string]string {

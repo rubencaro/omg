@@ -28,7 +28,6 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ## TODOs
 
-* `goto` command
 * support GCE to get machine names for `goto`
 * ...
 
@@ -36,6 +35,7 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ### master
 
+* `goto` command
 * Get rid of Viper
   * Parse TOML using [go-toml](https://github.com/pelletier/go-toml) directly.
   * Parse flags using stdlib.

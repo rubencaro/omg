@@ -30,12 +30,12 @@ func gotoFunc(cmd *Command, data *input.Data) error {
 	if len(data.Args) < 2 {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
-
-	// raw := data.Config.Servers[data.Args[2]]
-	hlp.Spit(data.Config)
-	// var target = &Server{Name: data.Args[2], IP: raw["ip"].(string)}
-	// return openTerminal(target, data)
-	return nil
+	name := data.Args[1]
+	target := data.Config.Servers[name]
+	if target == nil {
+		return fmt.Errorf("Unrecognised server name: '%s'", name)
+	}
+	return openTerminal(target, data)
 }
 
 func openTerminal(target *input.Server, data *input.Data) error {
@@ -43,8 +43,6 @@ func openTerminal(target *input.Server, data *input.Data) error {
 	if err != nil {
 		return err
 	}
-	hlp.Spit(cmdline)
-
 	_, err = hlp.Run(cmdline)
 	return err
 }
@@ -61,7 +59,7 @@ func renderTerminalTemplate(target *input.Server, data *input.Data) (string, err
 		Command string
 	}{
 		target.Name,
-		fmt.Sprintf("ssh %s@%s", data.Config.RemoteUser, target.IP),
+		fmt.Sprintf("ssh %s@%s", getRemoteUser(target, data), target.IP),
 	}
 
 	var res bytes.Buffer
@@ -70,4 +68,11 @@ func renderTerminalTemplate(target *input.Server, data *input.Data) (string, err
 		return "", err
 	}
 	return res.String(), nil
+}
+
+func getRemoteUser(target *input.Server, data *input.Data) string {
+	if target.RemoteUser != "" {
+		return target.RemoteUser
+	}
+	return data.Config.RemoteUser
 }

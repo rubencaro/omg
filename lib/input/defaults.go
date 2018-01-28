@@ -8,8 +8,7 @@ import (
 // getDefaults is where you should code default values for non-flag options
 func getDefaults() *ConfigData {
 	return &ConfigData{
-		// d.SetDefault("terminal", "terminator -T '{{.Title}}' -e '{{.Command}}'")
-		Terminal:   "konsole -e \"{{.Command}}\"",
+		Terminal:   "konsole -e '{{.Command}}' &",
 		RemoteUser: "$USER",
 	}
 }
