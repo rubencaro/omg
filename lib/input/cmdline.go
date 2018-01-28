@@ -5,18 +5,13 @@ import (
 	"os"
 )
 
-func parseCmdline(d *Data) error {
+func getFlagsAndArgs() (*flag.FlagSet, []string, error) {
 	// first parse and bind flags
 	fset, err := parseFlags()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
-	d.FlagSet = fset
-
-	// then get args after flags
-	d.Args = fset.Args()
-
-	return nil
+	return fset, fset.Args(), nil
 }
 
 func parseFlags() (*flag.FlagSet, error) {
@@ -27,7 +22,7 @@ func parseFlags() (*flag.FlagSet, error) {
 		return nil, err
 	}
 
-	fset.Parse(os.Args)
+	fset.Parse(os.Args[1:])
 
 	return fset, nil
 }

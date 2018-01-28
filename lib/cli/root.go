@@ -7,6 +7,20 @@ import (
 	"github.com/rubencaro/omg/lib/input"
 )
 
+// Command is the struct for a CLI command
+type Command struct {
+	Name string
+
+	// Short is the short description shown in the 'help' output.
+	Short string
+
+	// Long is the long message shown in the 'help <this-command>' output.
+	Long string
+
+	// The actual running function
+	Run func(cmd *Command, data *input.Data) error
+}
+
 // holder for init-time definition of commands
 var commands = map[string]*Command{}
 
@@ -19,21 +33,21 @@ func Execute(data *input.Data) error {
 	addDynamicCommands(data)
 
 	var cmd *Command
-	if len(data.Args) == 1 { // no command given
+	if len(data.Args) == 0 { // no command given
 		cmd = helpCmd
 	} else {
-		cmd = commands[data.Args[1]]
+		cmd = commands[data.Args[0]]
 	}
 
 	if cmd == nil {
-		return fmt.Errorf("Unknown command '%s'", data.Args[1])
+		return fmt.Errorf("Unknown command '%s'", data.Args[0])
 	}
 
 	return cmd.Run(cmd, data)
 }
 
 func addDynamicCommands(d *input.Data) error {
-	for k, v := range d.GetStringMapString("custom") {
+	for k, v := range d.Config.Custom {
 		addDynamicCommand(k, v)
 	}
 	return nil

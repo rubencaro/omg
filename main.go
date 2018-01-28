@@ -14,7 +14,7 @@ func main() {
 	// Read data
 	data, err := input.Read()
 	if err != nil {
-		fmt.Println("We need configuration! \n", err)
+		fmt.Println("Something was wrong while reading configuration: \n", err)
 		return
 	}
 

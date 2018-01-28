@@ -3,42 +3,33 @@ package input
 import (
 	"flag"
 	"os"
-
-	"github.com/spf13/viper"
 )
 
-// Data is a wrapper for Viper. No one outside input should need to import Viper.
+// Data is the main input data struct
 type Data struct {
-	*viper.Viper
-	Version string // to be set from build script, saved here to be used around
-	Args    []string
+	// Version is to be set from build script, saved here to be used around
+	Version string
+	// Args is the list of non-flag Args
+	Args []string
+	// FlagSet is the struct for the parsed flags
 	FlagSet *flag.FlagSet
+	// Config is the struct for the data from .omg.toml
+	Config *ConfigData
+	// Private is the struct for the data from .omg_private.toml
+	Private *ConfigData
+	// Defaults are coded defaul values
+	Defaults *ConfigData
 }
 
-// Get returns the value for given key.
-// It looks up for it on flags first, then env, and then config files.
-// Every key has at least a default value when it's defined.
-// Get expects the requested key to have at least a default value.
-// Either meaning it should be defined on code somewhere but it's not,
-// or requested key was incorrect, Get will panic when it cannot find a value.
-func Get(d *Data, key string) string {
-	// try flags first
+// GetFlagOrEnv looks for given key on flags, and if it doesn't find a value,
+// then it looks for a 'OMG_<key>' environment variable.
+// Returns empty string if not found.
+func GetFlagOrEnv(d *Data, key string) string {
 	v, ok := getFlag(d, key)
 	if ok {
 		return v
 	}
-
-	// env second
-	v, ok = os.LookupEnv("OMG_" + key)
-	if ok {
-		return v
-	}
-
-	// files last
-	// TODO: remove this with proper parsed toml struct access
-	return d.GetString(key)
-
-	// panic(fmt.Sprintf("OMG Unexpected key '%s'", key))
+	return os.Getenv("OMG_" + key)
 }
 
 func getFlag(d *Data, key string) (string, bool) {
@@ -51,17 +42,27 @@ func getFlag(d *Data, key string) (string, bool) {
 
 // Read parses all input from the outside world into a Data struct
 func Read() (*Data, error) {
-	d := &Data{Viper: viper.New()}
+	d := &Data{}
+	d.Defaults = getDefaults()
 
-	// then get cmdline data
-	parseCmdline(d)
-
-	// actual read & merge of config values
-	setFileDefaults(d)
-	d, err := doRead(d)
+	// get cmdline data
+	fset, args, err := getFlagsAndArgs()
 	if err != nil {
 		return d, err
 	}
+	d.FlagSet = fset
+	d.Args = args
+
+	// actual read of config files
+	config, priv, err := readFiles(d)
+	if err != nil {
+		return d, err
+	}
+	d.Config = config
+	d.Private = priv
+
+	// put everything together on the same struct in order of precedence
+	d.Config = consolidateData(d)
 
 	return d, nil
 }

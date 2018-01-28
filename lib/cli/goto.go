@@ -31,12 +31,14 @@ func gotoFunc(cmd *Command, data *input.Data) error {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
 
-	raw := data.GetStringMap("servers." + data.Args[2])
-	var target = &Server{Name: data.Args[2], IP: raw["ip"].(string)}
-	return openTerminal(target, data)
+	// raw := data.Config.Servers[data.Args[2]]
+	hlp.Spit(data.Config)
+	// var target = &Server{Name: data.Args[2], IP: raw["ip"].(string)}
+	// return openTerminal(target, data)
+	return nil
 }
 
-func openTerminal(target *Server, data *input.Data) error {
+func openTerminal(target *input.Server, data *input.Data) error {
 	cmdline, err := renderTerminalTemplate(target, data)
 	if err != nil {
 		return err
@@ -47,8 +49,8 @@ func openTerminal(target *Server, data *input.Data) error {
 	return err
 }
 
-func renderTerminalTemplate(target *Server, data *input.Data) (string, error) {
-	strTpl := data.GetString("terminal")
+func renderTerminalTemplate(target *input.Server, data *input.Data) (string, error) {
+	strTpl := data.Config.Terminal
 	tpl, err := template.New("term").Parse(strTpl)
 	if err != nil {
 		return "", fmt.Errorf("Bad template for terminal: %s", strTpl)
@@ -59,7 +61,7 @@ func renderTerminalTemplate(target *Server, data *input.Data) (string, error) {
 		Command string
 	}{
 		target.Name,
-		fmt.Sprintf("ssh %s@%s", data.GetString("remoteUser"), target.IP),
+		fmt.Sprintf("ssh %s@%s", data.Config.RemoteUser, target.IP),
 	}
 
 	var res bytes.Buffer

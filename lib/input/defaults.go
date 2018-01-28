@@ -5,11 +5,13 @@ import (
 	"os"
 )
 
-// setFileDefaults is where you should code default values file configurable options
-func setFileDefaults(d *Data) {
-	// d.SetDefault("terminal", "terminator -T '{{.Title}}' -e '{{.Command}}'")
-	d.SetDefault("terminal", "konsole -e \"{{.Command}}\"")
-	d.SetDefault("remoteUser", "$USER")
+// getDefaults is where you should code default values for non-flag options
+func getDefaults() *ConfigData {
+	return &ConfigData{
+		// d.SetDefault("terminal", "terminator -T '{{.Title}}' -e '{{.Command}}'")
+		Terminal:   "konsole -e \"{{.Command}}\"",
+		RemoteUser: "$USER",
+	}
 }
 
 // defineFlags is where you should code supported flags
