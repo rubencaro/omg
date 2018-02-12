@@ -20,6 +20,8 @@ All documentation should be accessible from the `omg help` command and comments 
 
 It can run arbitrary scripts on your machine, just like `npm run <thing>` does. Even simpler: you would do `omg <thing>`. See `custom` section on `.omg.toml` file.
 
+It can open a terminal with an SSH session on any remote server, either from a given fixed list, or from a configured GCE project. Once configured, you just run `omg goto <server name>`.
+
 ## What will it be able to do
 
 It will be able to perform all things [bottler](https://github.com/rubencaro/bottler) can. Except for the _release_ part, which needs an inside man on the Erlang VM. That will be sorted out supporting _distillery_.
