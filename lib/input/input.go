@@ -1,30 +1,13 @@
 package input
 
 import (
-	"os"
+	"regexp"
+	"strings"
 
 	"github.com/rubencaro/omg/lib/data"
+	"github.com/rubencaro/omg/lib/input/flags"
 	"github.com/rubencaro/omg/lib/input/gcloud"
 )
-
-// getFlagOrEnv looks for given key on flags, and if it doesn't find a value,
-// then it looks for a 'OMG_<key>' environment variable.
-// Returns empty string if not found.
-func getFlagOrEnv(d *data.D, key string) string {
-	v, ok := getFlag(d, key)
-	if ok {
-		return v
-	}
-	return os.Getenv("OMG_" + key)
-}
-
-func getFlag(d *data.D, key string) (string, bool) {
-	f := d.FlagSet.Lookup(key)
-	if f == nil {
-		return "", false
-	}
-	return f.Value.String(), true
-}
 
 // Read parses all input from the outside world into a data.D struct
 func Read() (*data.D, error) {
@@ -55,9 +38,61 @@ func Read() (*data.D, error) {
 
 // ResolveServers tries to get the server list from any source available.
 // If no automatic source is configured, then it returns specified fixed list.
-func ResolveServers(data *data.D) (map[string]*data.Server, error) {
-	if data.Config.Gce.Project != "" {
-		return gcloud.GetInstances(data)
+func ResolveServers(d *data.D) (map[string]*data.Server, error) {
+	complete, err := getCompleteServerList(d)
+	if err != nil {
+		return nil, err
 	}
-	return data.Config.Servers, nil
+	filtered := applyServersFlag(complete, d)
+	return applyMatch(filtered, d)
+}
+
+func applyMatch(in map[string]*data.Server, d *data.D) (map[string]*data.Server, error) {
+	match := getMatchString(d)
+	if match == "" {
+		return in, nil
+	}
+	rgx, err := regexp.Compile(match)
+	if err != nil {
+		return nil, err
+	}
+	out := map[string]*data.Server{}
+	for k := range in {
+		if rgx.MatchString(in[k].Name) {
+			out[k] = in[k]
+		}
+	}
+	return out, nil
+}
+
+func getMatchString(d *data.D) string {
+	match, _ := flags.GetFlag(d, "match")
+	if match == "" {
+		match = d.Config.Gce.Match
+	}
+	return match
+}
+
+func applyServersFlag(in map[string]*data.Server, d *data.D) map[string]*data.Server {
+	fixed, _ := flags.GetFlag(d, "servers")
+	if fixed != "" {
+		names := strings.Split(fixed, ",")
+		return mapNamesToServers(names, in)
+	}
+	return in
+}
+
+func getCompleteServerList(d *data.D) (map[string]*data.Server, error) {
+	if d.Config.Gce.Project != "" {
+		return gcloud.GetInstances(d)
+	}
+	return d.Config.Servers, nil
+}
+
+func mapNamesToServers(names []string, servers map[string]*data.Server) map[string]*data.Server {
+	res := map[string]*data.Server{}
+	for i := range names {
+		res[names[i]] = servers[names[i]]
+	}
+	return res
 }

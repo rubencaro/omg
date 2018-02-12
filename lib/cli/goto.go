@@ -43,6 +43,9 @@ func gotoFunc(cmd *Command, data *data.D) error {
 	if target == nil {
 		return fmt.Errorf("Unrecognised server name: '%s'", name)
 	}
+	if target.IP == "" {
+		return fmt.Errorf("Server without IP: '%+v'", target)
+	}
 	return openTerminal(target, data)
 }
 

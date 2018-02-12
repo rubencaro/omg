@@ -8,12 +8,13 @@ import (
 
 	"github.com/pelletier/go-toml"
 	"github.com/rubencaro/omg/lib/data"
+	"github.com/rubencaro/omg/lib/input/flags"
 )
 
 func readFiles(d *data.D) (*data.Config, *data.Config, error) {
 	var err error
 
-	path := getFlagOrEnv(d, "path")
+	path := flags.GetFlagOrEnv(d, "path")
 	configFile := path + "/.omg.toml"
 	privateFile := path + "/.omg_private.toml"
 
