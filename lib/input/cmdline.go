@@ -15,7 +15,7 @@ func getFlagsAndArgs() (*flag.FlagSet, []string, error) {
 }
 
 func parseFlags() (*flag.FlagSet, error) {
-	fset := flag.NewFlagSet("main", flag.ContinueOnError)
+	fset := flag.NewFlagSet("OMG flags", flag.ContinueOnError)
 
 	err := defineFlags(fset)
 	if err != nil {

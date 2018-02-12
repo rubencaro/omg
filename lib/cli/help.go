@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"flag"
 	"fmt"
 
 	"github.com/rubencaro/omg/lib/data"
@@ -14,11 +15,11 @@ var helpCmd = &Command{
 	Name:  "help",
 	Short: "Show help about other commands",
 	Long:  helpLongText,
-	Run: func(cmd *Command, data *data.D) error {
-		if len(data.Args) < 2 { // 'help' itself, or no command, given
+	Run: func(cmd *Command, d *data.D) error {
+		if len(d.Args) < 2 { // 'help' itself, or no command, given
 			printHelpIndex()
 		} else {
-			printLongHelp(commands[data.Args[1]])
+			printLongHelp(commands[d.Args[1]], d.FlagSet)
 		}
 		return nil
 	},
@@ -38,10 +39,11 @@ func printHelpIndex() {
 	fmt.Println(helpLongText)
 }
 
-func printLongHelp(cmd *Command) {
+func printLongHelp(cmd *Command, fset *flag.FlagSet) {
 	if cmd == nil {
 		printHelpIndex()
 	} else {
 		fmt.Println(cmd.Long)
+		fset.Usage()
 	}
 }
