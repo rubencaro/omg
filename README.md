@@ -30,12 +30,12 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ## TODOs
 
-* Add flags help to command help text
 
 ## Changelog
 
-### master
+### 0.3
 
+* Add flags help to command help text
 * support for `servers` flag
 * support for `match` flag
 
