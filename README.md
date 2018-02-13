@@ -30,6 +30,10 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ## TODOs
 
+* Support to ship to a remote server
+* Support to run a remote script
+* Support to run a remote script from a custom command
+
 ## Changelog
 
 ### master
