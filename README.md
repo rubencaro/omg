@@ -30,8 +30,11 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ## TODOs
 
-
 ## Changelog
+
+### master
+
+* Pass all flags data to custom commands
 
 ### 0.3
 

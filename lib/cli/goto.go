@@ -27,30 +27,30 @@ See the '.omg.toml' file for more detail.
 	Run: gotoFunc,
 }
 
-func gotoFunc(cmd *Command, data *data.D) error {
-	if len(data.Args) < 2 {
+func gotoFunc(cmd *Command, d *data.D) error {
+	if len(d.Args) < 2 {
 		return fmt.Errorf("Not enough arguments. Usage:\n%s", cmd.Long)
 	}
-	name := data.Args[1]
+	name := d.Args[1]
 
-	servers, err := input.ResolveServers(data)
+	servers, err := input.ResolveServers(d)
 	if err != nil {
 		return err
 	}
-	data.Config.Servers = servers
+	d.Config.Servers = servers
 
-	target := data.Config.Servers[name]
+	target := d.Config.Servers[name]
 	if target == nil {
 		return fmt.Errorf("Unrecognised server name: '%s'", name)
 	}
 	if target.IP == "" {
 		return fmt.Errorf("Server without IP: '%+v'", target)
 	}
-	return openTerminal(target, data)
+	return openTerminal(target, d)
 }
 
-func openTerminal(target *data.Server, data *data.D) error {
-	cmdline, err := renderTerminalTemplate(target, data)
+func openTerminal(target *data.Server, d *data.D) error {
+	cmdline, err := renderTerminalTemplate(target, d)
 	if err != nil {
 		return err
 	}
@@ -58,8 +58,8 @@ func openTerminal(target *data.Server, data *data.D) error {
 	return err
 }
 
-func renderTerminalTemplate(target *data.Server, data *data.D) (string, error) {
-	strTpl := data.Config.Terminal
+func renderTerminalTemplate(target *data.Server, d *data.D) (string, error) {
+	strTpl := d.Config.Terminal
 	tpl, err := template.New("term").Parse(strTpl)
 	if err != nil {
 		return "", fmt.Errorf("Bad template for terminal: %s", strTpl)
@@ -70,7 +70,7 @@ func renderTerminalTemplate(target *data.Server, data *data.D) (string, error) {
 		Command string
 	}{
 		target.Name,
-		fmt.Sprintf("ssh %s@%s", getRemoteUser(target, data), target.IP),
+		fmt.Sprintf("ssh %s@%s", getRemoteUser(target, d), target.IP),
 	}
 
 	var res bytes.Buffer
@@ -81,9 +81,9 @@ func renderTerminalTemplate(target *data.Server, data *data.D) (string, error) {
 	return res.String(), nil
 }
 
-func getRemoteUser(target *data.Server, data *data.D) string {
+func getRemoteUser(target *data.Server, d *data.D) string {
 	if target.RemoteUser != "" {
 		return target.RemoteUser
 	}
-	return data.Config.RemoteUser
+	return d.Config.RemoteUser
 }

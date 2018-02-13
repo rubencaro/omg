@@ -45,5 +45,6 @@ func printLongHelp(cmd *Command, fset *flag.FlagSet) {
 	} else {
 		fmt.Println(cmd.Long)
 		fset.Usage()
+		fmt.Println("")
 	}
 }
