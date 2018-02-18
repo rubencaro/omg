@@ -38,6 +38,7 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 
 ### master
 
+* Support `each` for custom commands
 * Pass all flags data to custom commands
 
 ### 0.3

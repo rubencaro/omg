@@ -11,7 +11,7 @@ func consolidateData(d *data.D) *data.Config {
 	return &data.Config{
 		Terminal:   getTerminal(d),
 		RemoteUser: getRemoteUser(d),
-		Custom:     getCustom(d),
+		Customs:    getCustoms(d),
 		Servers:    getServers(d),
 		Gce:        getGce(d),
 	}
@@ -25,8 +25,8 @@ func getRemoteUser(d *data.D) string {
 	return getFNZString(d.Private.RemoteUser, d.Config.RemoteUser, d.Defaults.RemoteUser)
 }
 
-func getCustom(d *data.D) map[string]string {
-	return getFNZMapStringString(d.Private.Custom, d.Config.Custom)
+func getCustoms(d *data.D) map[string]*data.Custom {
+	return getFNZMapStringCustom(d.Private.Customs, d.Config.Customs)
 }
 
 func getServers(d *data.D) map[string]*data.Server {
@@ -49,24 +49,4 @@ func getGce(d *data.D) *data.Gce {
 		return d.Private.Gce
 	}
 	return d.Config.Gce
-}
-
-// FNZ (FirstNonZero) functions
-
-func getFNZString(values ...string) string {
-	for _, v := range values {
-		if v != "" {
-			return v
-		}
-	}
-	return ""
-}
-
-func getFNZMapStringString(values ...map[string]string) map[string]string {
-	for _, v := range values {
-		if len(v) > 0 {
-			return v
-		}
-	}
-	return map[string]string{}
 }

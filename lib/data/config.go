@@ -10,9 +10,8 @@ type Config struct {
 	// RemoteUser is the user to be used on remote machines
 	RemoteUser string
 
-	// Custom is the definition of custom commands to be mapped through OMG
-	// It is a simple map[string]string by now
-	Custom map[string]string
+	// Customs is the definition of custom commands to be mapped through OMG
+	Customs map[string]*Custom
 
 	// Servers is the manual server list to work with
 	Servers map[string]*Server
@@ -20,6 +19,12 @@ type Config struct {
 	// Gce is the config to get the server list from GCE
 	// If this is set, the 'Servers' list will be overwritten
 	Gce *Gce
+}
+
+// Custom is the data defining a custom command
+type Custom struct {
+	Cmd string
+	Run string
 }
 
 // Server is the data for a remote server
