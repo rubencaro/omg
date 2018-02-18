@@ -18,9 +18,13 @@ All documentation should be accessible from the `omg help` command and comments 
 
 ## What can it do
 
-It can resolve a list of servers (name, IPs, etc.) from a fixed list on config, or from a configured GCE project, and match them with a given list of names or a given regex. That list of servers can be applied to commands, that would mean different things for different commands.
+You could always run `omg help` and see for yourself, and also then self generated `.omg.toml` file, but here is a brief description.
 
-It can run arbitrary scripts on your machine, just like `npm run <thing>` does. Even simpler: you would do `omg <thing>`. See `customs` section on `.omg.toml` file. It can do that once, but also for each of the servers on the resolved server list.
+It can resolve a list of servers (name, IPs, etc.) from a fixed list on config, or from a configured GCE project, and match them with a given list of names or a given regex. That list of servers can be applied to commands. That would mean different things for different commands, but the point is you can abstract where server list definition comes from.
+
+It can run arbitrary scripts on your machine, just like `npm` does. Even simpler: you would do `omg <thing>`. See `customs` section on `.omg.toml` file for details. It can do that once, but also for each of the servers on the resolved server list. Communication between OMG and the custom script is done via environment variables.
+
+It can run arbitrary scripts on remote servers too. Just run `omg run <thing>` and it will run it on all configured servers. See `omg help run` for details.
 
 It can open a terminal with an SSH session on any remote server from the resolved server list. You can configure the actual `terminal` command. Once configured, you just run `omg goto <server name>`.
 
@@ -29,6 +33,8 @@ It can open a terminal with an SSH session on any remote server from the resolve
 It will be able to perform all things [bottler](https://github.com/rubencaro/bottler) can. Except for the _release_ part, which needs an inside man on the Erlang VM. That will be sorted out supporting _distillery_.
 
 It will be able to do some of the things [goreleaser](https://goreleaser.com/) does. Like _builds_ for several platforms and _releasing_ to github.
+
+Maybe some things will be delegated to scripts to keep the OMG binary small and not to carry too much project specific logic.
 
 ## TODOs
 
