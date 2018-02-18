@@ -14,7 +14,7 @@ import (
 // to get the list of instances for the given parameters
 func GetInstances(data *data.D) (map[string]*data.Server, error) {
 	cmd := getInstancesCmd(data)
-	res, err := hlp.Run(hlp.Silent, cmd)
+	res, err := hlp.Run(cmd, nil)
 	if err != nil {
 		return nil, err
 	}

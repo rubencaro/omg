@@ -33,14 +33,14 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 ## TODOs
 
 * Support to ship to a remote server
-* Support to run a remote script
-* Support to run a remote script from a custom command
+* Force target server definition for dangerous commands
 * Pass __all__ data to custom scripts as JSON
 
 ## Changelog
 
 ### master
 
+* Support to run a remote script
 * Support `each` for custom commands
 * Pass some data to custom commands
 

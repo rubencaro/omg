@@ -54,7 +54,7 @@ func openTerminal(target *data.Server, d *data.D) error {
 	if err != nil {
 		return err
 	}
-	_, err = hlp.Run(hlp.PrintToStdout, cmdline)
+	_, err = hlp.Run(cmdline, &hlp.RunOpts{Print: hlp.PrintToStdout})
 	return err
 }
 
@@ -70,7 +70,7 @@ func renderTerminalTemplate(target *data.Server, d *data.D) (string, error) {
 		Command string
 	}{
 		target.Name,
-		fmt.Sprintf("ssh %s@%s", getRemoteUser(target, d), target.IP),
+		fmt.Sprintf("ssh %s@%s", hlp.GetRemoteUser(target, d), target.IP),
 	}
 
 	var res bytes.Buffer
@@ -79,11 +79,4 @@ func renderTerminalTemplate(target *data.Server, d *data.D) (string, error) {
 		return "", err
 	}
 	return res.String(), nil
-}
-
-func getRemoteUser(target *data.Server, d *data.D) string {
-	if target.RemoteUser != "" {
-		return target.RemoteUser
-	}
-	return d.Config.RemoteUser
 }

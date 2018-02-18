@@ -17,7 +17,7 @@ type Command struct {
 	Long string
 
 	// The actual running function
-	Run func(cmd *Command, data *data.D) error
+	Run func(*Command, *data.D) error
 }
 
 // holder for init-time definition of commands
@@ -28,19 +28,19 @@ func addCommand(cmd *Command) {
 }
 
 // Execute finds out which Command to run, and then runs it
-func Execute(data *data.D) error {
-	addCustomCommands(data)
+func Execute(d *data.D) error {
+	addCustomCommands(d)
 
 	var cmd *Command
-	if len(data.Args) == 0 { // no command given
+	if len(d.Args) == 0 { // no command given
 		cmd = helpCmd
 	} else {
-		cmd = commands[data.Args[0]]
+		cmd = commands[d.Args[0]]
 	}
 
 	if cmd == nil {
-		return fmt.Errorf("Unknown command '%s'", data.Args[0])
+		return fmt.Errorf("Unknown command '%s'", d.Args[0])
 	}
 
-	return cmd.Run(cmd, data)
+	return cmd.Run(cmd, d)
 }
