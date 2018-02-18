@@ -140,7 +140,7 @@ func RunRegularCmd(cmdline string, d *data.D) error {
 }
 
 func getRegularExportsString(d *data.D) string {
-	names := getServerNames(d)
+	names := GetServerNames(d)
 	res := "export OMG_SERVER_NAMES=" + strings.Join(names, ",") + ";"
 
 	ips := getServerIPs(d)
@@ -158,7 +158,8 @@ func getSingleExportsString(s *data.Server, d *data.D) string {
 	)
 }
 
-func getServerNames(d *data.D) []string {
+// GetServerNames returns server names contained on given D
+func GetServerNames(d *data.D) []string {
 	res := []string{}
 	for _, s := range d.Config.Servers {
 		res = append(res, s.Name)

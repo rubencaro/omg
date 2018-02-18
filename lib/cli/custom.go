@@ -34,6 +34,10 @@ func customFunc(cust *data.Custom) func(*Command, *data.D) error {
 		d.Config.Servers = servers
 
 		if cust.Run == "each" {
+			ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", cust.Cmd, hlp.GetServerNames(d))
+			if !ok {
+				return fmt.Errorf("Cancelled")
+			}
 			return hlp.RunForEachServer(cust.Cmd, d)
 		}
 		return hlp.RunRegularCmd(cust.Cmd, d)

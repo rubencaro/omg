@@ -27,6 +27,10 @@ func runFunc(cmd *Command, d *data.D) error {
 	d.Config.Servers = servers
 
 	cmdline := "ssh $OMG_USER@$OMG_SERVER_IP "
+	ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", cmdline, hlp.GetServerNames(d))
+	if !ok {
+		return fmt.Errorf("Cancelled")
+	}
 	return hlp.RunForEachServer(cmdline, d)
 }
 

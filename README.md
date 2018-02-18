@@ -38,14 +38,13 @@ Maybe some things will be delegated to scripts to keep the OMG binary small and 
 
 ## TODOs
 
-* Support to ship to a remote server
-* Force target server definition for dangerous commands
 * Pass __all__ data to custom scripts as JSON
 
 ## Changelog
 
 ### master
 
+* Ask for confirmation on dangerous commands
 * Support to run a remote script
 * Support `each` for custom commands
 * Pass some data to custom commands
