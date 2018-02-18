@@ -18,9 +18,11 @@ All documentation should be accessible from the `omg help` command and comments 
 
 ## What can it do
 
-It can run arbitrary scripts on your machine, just like `npm run <thing>` does. Even simpler: you would do `omg <thing>`. See `custom` section on `.omg.toml` file.
+It can resolve a list of servers (name, IPs, etc.) from a fixed list on config, or from a configured GCE project, and match them with a given list of names or a given regex. That list of servers can be applied to commands, that would mean different things for different commands.
 
-It can open a terminal with an SSH session on any remote server, either from a given fixed list, or from a configured GCE project. Once configured, you just run `omg goto <server name>`.
+It can run arbitrary scripts on your machine, just like `npm run <thing>` does. Even simpler: you would do `omg <thing>`. See `customs` section on `.omg.toml` file. It can do that once, but also for each of the servers on the resolved server list.
+
+It can open a terminal with an SSH session on any remote server from the resolved server list. You can configure the actual `terminal` command. Once configured, you just run `omg goto <server name>`.
 
 ## What will it be able to do
 
@@ -33,13 +35,14 @@ It will be able to do some of the things [goreleaser](https://goreleaser.com/) d
 * Support to ship to a remote server
 * Support to run a remote script
 * Support to run a remote script from a custom command
+* Pass __all__ data to custom scripts as JSON
 
 ## Changelog
 
 ### master
 
 * Support `each` for custom commands
-* Pass all flags data to custom commands
+* Pass some data to custom commands
 
 ### 0.3
 
