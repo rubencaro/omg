@@ -39,6 +39,7 @@ Maybe some things will be delegated to scripts to keep the OMG binary small and 
 ## TODOs
 
 * Pass __all__ data to custom scripts as JSON
+* Allow environment configuration for customs
 
 ## Changelog
 
