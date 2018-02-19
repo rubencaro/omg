@@ -67,7 +67,14 @@ func getEnvVariablesUsage(cust *data.Custom) string {
 OMG_SERVER_NAMES - will contain selected servers' names
                    comma separated (ex. "srv1,srv2")
 OMG_SERVER_IPS   - will contain selected servers' IPs
-                   comma separated (ex. "1.1.1.1,1.1.1.2")
+									 comma separated (ex. "1.1.1.1,1.1.1.2")
+
+The comma separated format is suited to pass on as part of an URL,
+and dead easy to split into an array on most programming languages.
+For example if you need to use it from bash you can get an array
+doing something like:
+
+		arrServerNames=(${OMG_SERVER_NAMES//,/ })
 		`
 }
 
