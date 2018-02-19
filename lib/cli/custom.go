@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
@@ -34,7 +35,8 @@ func customFunc(cust *data.Custom) func(*Command, *data.D) error {
 		d.Config.Servers = servers
 
 		if cust.Run == "each" {
-			ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", cust.Cmd, hlp.GetServerNames(d))
+			complete := strings.Join(append([]string{cust.Cmd}, d.Args...), " ")
+			ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", complete, hlp.GetServerNames(d))
 			if !ok {
 				return fmt.Errorf("Cancelled")
 			}
