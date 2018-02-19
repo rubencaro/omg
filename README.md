@@ -45,6 +45,8 @@ Maybe some things will be delegated to scripts to keep the OMG binary small and 
 
 ### master
 
+### 0.4
+
 * Ask for confirmation on dangerous commands
 * Support to run a remote script
 * Support `each` for custom commands

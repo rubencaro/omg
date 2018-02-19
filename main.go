@@ -7,7 +7,7 @@ import (
 	"github.com/rubencaro/omg/lib/input"
 )
 
-var release = "0.3.0"
+var release = "0.4.0"
 var commit string // to be set from build script
 
 func main() {
