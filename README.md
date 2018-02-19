@@ -40,6 +40,7 @@ Maybe some things will be delegated to scripts to keep the OMG binary small and 
 
 * Pass __all__ data to custom scripts as JSON
 * Allow environment configuration for customs
+* Fix confirmation message being incomplete for `run` at least
 
 ## Changelog
 
