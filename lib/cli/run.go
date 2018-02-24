@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/rubencaro/omg/lib/input/flags"
+
 	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
 	"github.com/rubencaro/omg/lib/input"
@@ -29,9 +31,12 @@ func runFunc(cmd *Command, d *data.D) error {
 
 	cmdline := "ssh $OMG_USER@$OMG_SERVER_IP "
 	complete := strings.Join(append([]string{cmdline}, d.Args...), " ")
-	ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", complete, hlp.GetServerNames(d))
-	if !ok {
-		return fmt.Errorf("Cancelled")
+	y, _ := flags.GetBoolFlag(d, "y")
+	if !y {
+		ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", complete, hlp.GetServerNames(d))
+		if !ok {
+			return fmt.Errorf("Cancelled")
+		}
 	}
 	return hlp.RunForEachServer(cmdline, d)
 }

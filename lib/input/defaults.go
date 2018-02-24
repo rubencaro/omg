@@ -22,6 +22,7 @@ func defineFlags(fset *flag.FlagSet) error {
 		return err
 	}
 	fset.String("path", cwd, "Folder with configuration files.")
+	fset.Bool("y", false, "Assume 'Yes' as response for any confirmation.")
 	fset.String("servers", "", "Comma separated list of server names (ex. 'srv1,srv2,srv3').")
 	fset.String("match", "", "Regular expression to be matched agaist the list of server names.\n        Applies regardless of the way to obtain that list.")
 

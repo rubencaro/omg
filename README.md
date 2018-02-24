@@ -45,6 +45,8 @@ Maybe some things will be delegated to scripts to keep the OMG binary small and 
 
 ### master
 
+* Fix some edge cases with empty servers
+* Add `-y` flag to allow bypassing the confirmation
 * Fix confirmation message
 
 ### 0.4

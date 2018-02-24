@@ -7,6 +7,7 @@ import (
 	"github.com/rubencaro/omg/lib/data"
 	"github.com/rubencaro/omg/lib/hlp"
 	"github.com/rubencaro/omg/lib/input"
+	"github.com/rubencaro/omg/lib/input/flags"
 )
 
 func addCustomCommands(d *data.D) error {
@@ -36,9 +37,12 @@ func customFunc(cust *data.Custom) func(*Command, *data.D) error {
 
 		if cust.Run == "each" {
 			complete := strings.Join(append([]string{cust.Cmd}, d.Args...), " ")
-			ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", complete, hlp.GetServerNames(d))
-			if !ok {
-				return fmt.Errorf("Cancelled")
+			y, _ := flags.GetBoolFlag(d, "y")
+			if !y {
+				ok := hlp.Confirm("This will run '%s'\non %s. \nAre you sure?", complete, hlp.GetServerNames(d))
+				if !ok {
+					return fmt.Errorf("Cancelled")
+				}
 			}
 			return hlp.RunForEachServer(cust.Cmd, d)
 		}

@@ -27,3 +27,13 @@ func GetFlag(d *data.D, key string) (string, bool) {
 	}
 	return f.Value.String(), true
 }
+
+// GetBoolFlag returns the bool value of a flag contained in given D,
+// and a bool indicating whether it was found
+func GetBoolFlag(d *data.D, key string) (bool, bool) {
+	f := d.FlagSet.Lookup(key)
+	if f == nil {
+		return false, false
+	}
+	return f.Value.String() == "true", true
+}

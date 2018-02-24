@@ -126,6 +126,9 @@ func readErrors(in <-chan error) []string {
 
 func runSingleCmd(wg *sync.WaitGroup, errors chan<- error, s *data.Server, cmdline string, d *data.D) {
 	defer wg.Done()
+	if s == nil {
+		return
+	}
 	exports := getSingleExportsString(s, d)
 	prefix := fmt.Sprintf("%s(%s): ", s.Name, s.IP)
 	_, err := Run(exports+cmdline, &RunOpts{Print: PrintToStdout, Prefix: prefix}, d.Args[1:]...)
@@ -150,6 +153,9 @@ func getRegularExportsString(d *data.D) string {
 }
 
 func getSingleExportsString(s *data.Server, d *data.D) string {
+	if s == nil {
+		return ""
+	}
 	return fmt.Sprintf(
 		"export OMG_SERVER_NAME=%s;export OMG_SERVER_IP=%s;export OMG_USER=%s;",
 		s.Name,
@@ -162,6 +168,9 @@ func getSingleExportsString(s *data.Server, d *data.D) string {
 func GetServerNames(d *data.D) []string {
 	res := []string{}
 	for _, s := range d.Config.Servers {
+		if s == nil {
+			continue
+		}
 		res = append(res, s.Name)
 	}
 	return res
@@ -170,6 +179,9 @@ func GetServerNames(d *data.D) []string {
 func getServerIPs(d *data.D) []string {
 	res := []string{}
 	for _, s := range d.Config.Servers {
+		if s == nil {
+			continue
+		}
 		res = append(res, s.IP)
 	}
 	return res
@@ -178,7 +190,7 @@ func getServerIPs(d *data.D) []string {
 // GetRemoteUser returns the remote user for this target
 // after looking on every configuration level
 func GetRemoteUser(target *data.Server, d *data.D) string {
-	if target.RemoteUser != "" {
+	if target != nil && target.RemoteUser != "" {
 		return target.RemoteUser
 	}
 	return d.Config.RemoteUser
